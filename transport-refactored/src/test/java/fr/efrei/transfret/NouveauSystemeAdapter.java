@@ -29,6 +29,7 @@ public class NouveauSystemeAdapter implements SystemeTransport {
 
     private ServiceClient serviceClient;
     private ServiceExpedition serviceExpedition;
+    private final GenerateurFacture generateurFacture = new GenerateurFacture();
 
     @Override
     public void reinitialiser() {
@@ -92,7 +93,7 @@ public class NouveauSystemeAdapter implements SystemeTransport {
 
     @Override
     public Optional<String> facture(String id) {
-        return Optional.ofNullable(Database.expeditions.get(id)).map(Expedition::genererFacture);
+        return Optional.ofNullable(Database.expeditions.get(id)).map(generateurFacture::generer);
     }
 
     @Override

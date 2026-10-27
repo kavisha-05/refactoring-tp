@@ -6,9 +6,6 @@ import java.util.List;
 
 public class Expedition {
 
-    private static final String SEPARATEUR_DOUBLE = "==============================================\n";
-    private static final String SEPARATEUR_SIMPLE = "----------------------------------------------\n";
-
     private String id;
     private Client client;
     private List<Colis> colis = new ArrayList<Colis>();
@@ -49,38 +46,6 @@ public class Expedition {
             total = total + colis.get(i).getValeurDeclaree();
         }
         return total;
-    }
-
-    public String genererFacture() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(SEPARATEUR_DOUBLE);
-        sb.append("              FACTURE TRANSFRET\n");
-        sb.append(SEPARATEUR_DOUBLE);
-        sb.append("Facture n° F-" + id + "\n");
-        sb.append("Date : " + Utils.formaterDate(new Date()) + "\n");
-        sb.append("Client : " + client.getNom() + "\n");
-        if (client.getType() == TypeClient.ENTREPRISE) {
-            sb.append("SIRET : " + client.getSiret() + "\n");
-        }
-        sb.append("Adresse : " + client.getAdresse() + "\n");
-        sb.append(SEPARATEUR_SIMPLE);
-        sb.append("Trajet : " + villeDepart + " -> " + villeArrivee + " (" + distance + " km)\n");
-        sb.append("Mode : " + mode + (urgent ? " (URGENT)" : "") + "\n");
-        sb.append("Colis :\n");
-        for (Colis c : colis) {
-            sb.append("  - " + c.getDescription() + " : " + c.getPoids() + " kg [" + c.getLibelleType() + "]\n");
-        }
-        sb.append(SEPARATEUR_SIMPLE);
-        if (statut == StatutExpedition.ANNULEE) {
-            sb.append("EXPEDITION ANNULEE\n");
-            sb.append("Frais d'annulation TTC : " + String.format("%.2f", fraisAnnulation) + " €\n");
-        } else {
-            sb.append("Total HT  : " + String.format("%.2f", prixHT) + " €\n");
-            sb.append("TVA 20%   : " + String.format("%.2f", prixTTC - prixHT) + " €\n");
-            sb.append("Total TTC : " + String.format("%.2f", prixTTC) + " €\n");
-        }
-        sb.append(SEPARATEUR_DOUBLE);
-        return sb.toString();
     }
 
     public String getId() {
