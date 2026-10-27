@@ -5,14 +5,22 @@ package fr.efrei.transfret;
  */
 public class Notificateur {
 
-    public void envoyerEmail(Client client, String sujet, String corps) {
-        EmailService.envoyer(client.getEmail(), sujet, corps);
+    private final EnvoiEmail email;
+    private final EnvoiSms sms;
+
+    public Notificateur(EnvoiEmail email, EnvoiSms sms) {
+        this.email = email;
+        this.sms = sms;
     }
 
-    public void notifier(Client client, String sujet, String corps, String sms) {
+    public void envoyerEmail(Client client, String sujet, String corps) {
+        email.envoyer(client.getEmail(), sujet, corps);
+    }
+
+    public void notifier(Client client, String sujet, String corps, String messageSms) {
         envoyerEmail(client, sujet, corps);
         if (client.getType() == TypeClient.PREMIUM) {
-            new SmsService().envoyerSms(client.getTelephone(), sms);
+            sms.envoyer(client.getTelephone(), messageSms);
         }
     }
 }

@@ -10,6 +10,7 @@ public class EstimateurDelai {
     private static final int HEURES_CONDUITE_PAR_JOUR_URGENT = 18;
     private static final double KM_PAR_JOUR_RAIL = 1440.0;
     private static final int JOURS_SUPPLEMENTAIRES_RAIL = 1;
+    private static final int REDUCTION_URGENCE_RAIL_JOURS = 1;
     private static final double KM_PAR_JOUR_MER = 720.0;
     private static final int JOURS_SUPPLEMENTAIRES_MER = 2;
     private static final int DISTANCE_LONGUE_AIR_KM = 3000;
@@ -31,7 +32,7 @@ public class EstimateurDelai {
                 break;
             case RAIL:
                 jours = (int) Math.ceil(distance / KM_PAR_JOUR_RAIL) + JOURS_SUPPLEMENTAIRES_RAIL;
-                if (urgent) jours = jours - 1;
+                if (urgent) jours -= REDUCTION_URGENCE_RAIL_JOURS;
                 break;
             case MER:
                 jours = (int) Math.ceil(distance / KM_PAR_JOUR_MER) + JOURS_SUPPLEMENTAIRES_MER;

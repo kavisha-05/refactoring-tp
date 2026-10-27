@@ -6,10 +6,10 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Flotte.initialiser();
-        ServiceClient serviceClient = new ServiceClient();
-        ServiceExpedition serviceExpedition = new ServiceExpedition();
-        GenerateurFacture generateurFacture = new GenerateurFacture();
+        Application app = new Application();
+        ServiceClient serviceClient = app.serviceClient();
+        ServiceExpedition serviceExpedition = app.serviceExpedition();
+        GenerateurFacture generateurFacture = app.generateurFacture();
 
         System.out.println("\n----- Clients -----");
         Client dupont = serviceClient.creerClient("Jean Dupont", "jean.dupont@mail.fr", "0601020304", "12 rue de la Paix, 75002 Paris", TypeClient.PARTICULIER, null);

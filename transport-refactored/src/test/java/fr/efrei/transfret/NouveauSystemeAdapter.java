@@ -22,45 +22,35 @@ import java.util.stream.Collectors;
 /**
  * Branche le nouveau code sur les tests de contrat.
  * <p>
- * Tout le « bricolage » nécessaire pour tester l'ancien code (état statique à vider,
- * conversion des codes {@code String}/{@code int}…) est confiné ici.
+ * Ne fait que de la traduction : conversion des types du contrat vers ceux du domaine,
+ * et accès aux journaux de notifications pour les tests.
  */
 public class NouveauSystemeAdapter implements SystemeTransport {
 
-    private ServiceClient serviceClient;
-    private ServiceExpedition serviceExpedition;
-    private final GenerateurFacture generateurFacture = new GenerateurFacture();
+    private Application app;
 
     @Override
     public void reinitialiser() {
-        Database.getInstance();
-        Database.expeditions.clear();
-        Database.clients.clear();
-        EmailService.journal.clear();
-        SmsService.journal.clear();
-        ServiceExpedition.compteur = 0;
-        Flotte.initialiser();
-        serviceClient = new ServiceClient();
-        serviceExpedition = new ServiceExpedition();
+        app = new Application();
     }
 
     @Override
     public Optional<String> creerClient(DemandeClient d) {
-        Client client = serviceClient.creerClient(d.nom(), d.email(), d.telephone(), d.adresse(), TypeClient.valueOf(d.type().name()), d.siret());
+        Client client = app.serviceClient().creerClient(d.nom(), d.email(), d.telephone(), d.adresse(), TypeClient.valueOf(d.type().name()), d.siret());
         return Optional.ofNullable(client).map(Client::getEmail);
     }
 
     @Override
     public Optional<String> creerExpedition(DemandeExpedition d) {
-        Client client = Database.clients.get(d.refClient());
-        Expedition expedition = serviceExpedition.creerExpedition(client, versColis(d.colis()), d.villeDepart(),
+        Client client = app.clients().trouverParEmail(d.refClient()).orElse(null);
+        Expedition expedition = app.serviceExpedition().creerExpedition(client, versColis(d.colis()), d.villeDepart(),
                 d.villeArrivee(), ModeTransport.valueOf(d.mode().name()), d.urgent(), d.assurance());
         return Optional.ofNullable(expedition).map(Expedition::getId);
     }
 
     @Override
     public Optional<EtatExpedition> consulter(String id) {
-        Expedition e = Database.expeditions.get(id);
+        Expedition e = app.expeditions().trouver(id).orElse(null);
         if (e == null) {
             return Optional.empty();
         }
@@ -71,38 +61,38 @@ public class NouveauSystemeAdapter implements SystemeTransport {
 
     @Override
     public OptionalDouble devisTTC(DemandeDevis d) {
-        double devis = serviceExpedition.calculerDevis(versColis(d.colis()), d.villeDepart(), d.villeArrivee(),
+        double devis = app.serviceExpedition().calculerDevis(versColis(d.colis()), d.villeDepart(), d.villeArrivee(),
                 ModeTransport.valueOf(d.mode().name()), d.urgent(), d.assurance(), TypeClient.valueOf(d.typeClient().name()));
         return devis == -1 ? OptionalDouble.empty() : OptionalDouble.of(devis);
     }
 
     @Override
     public boolean demarrer(String id) {
-        return serviceExpedition.demarrerExpedition(id);
+        return app.serviceExpedition().demarrerExpedition(id);
     }
 
     @Override
     public boolean livrer(String id) {
-        return serviceExpedition.livrerExpedition(id);
+        return app.serviceExpedition().livrerExpedition(id);
     }
 
     @Override
     public boolean annuler(String id) {
-        return serviceExpedition.annulerExpedition(id);
+        return app.serviceExpedition().annulerExpedition(id);
     }
 
     @Override
     public Optional<String> facture(String id) {
-        return Optional.ofNullable(Database.expeditions.get(id)).map(generateurFacture::generer);
+        return app.expeditions().trouver(id).map(app.generateurFacture()::generer);
     }
 
     @Override
     public List<Notification> notifications() {
         List<Notification> notifications = new ArrayList<>();
-        for (String[] email : EmailService.journal) {
+        for (String[] email : app.emails().getJournal()) {
             notifications.add(new Notification(Canal.EMAIL, email[0], email[1]));
         }
-        for (String[] sms : SmsService.journal) {
+        for (String[] sms : app.sms().getJournal()) {
             notifications.add(new Notification(Canal.SMS, sms[0], sms[1]));
         }
         return notifications;
