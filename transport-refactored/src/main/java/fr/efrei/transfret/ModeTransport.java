@@ -4,9 +4,10 @@ public enum ModeTransport {
     ROUTE(new TarifRoute(), Delais::route, true, true, null),
     RAIL(new TarifRail(), Delais::rail, true, false, null),
     MER(new TarifMer(), Delais::mer, true, true, "pas d'option urgente pour le transport maritime"),
-    AIR(new TarifAir(), Delais::air, false, false, null);
+    AIR(new TarifAir(), Delais::air, false, false, null),
+    FLUVIAL(new TarifFluvial(), Delais::fluvial, true, false, "pas d'option urgente pour le transport fluvial");
 
-private final TarifTransport tarif;
+    private final TarifTransport tarif;
     private final DelaiTransport delai;
     private final boolean marchandisesDangereuses;
     private final boolean refrigeration;

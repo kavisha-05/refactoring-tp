@@ -16,6 +16,7 @@ public class Utils {
     private static final int DISTANCE_LE_HAVRE_NEW_YORK = 5850;
     private static final int DISTANCE_MARSEILLE_ALGER = 760;
     private static final int DISTANCE_PARIS_NEW_YORK = 5840;
+    private static final int DISTANCE_PARIS_LE_HAVRE = 365;
 
     public static double arrondir(double valeur) {
         return Math.round(valeur * CENTIMES_PAR_EURO) / CENTIMES_PAR_EURO;
@@ -40,7 +41,9 @@ public class Utils {
     public static int getDistance(String villeA, String villeB) {
         String a = villeA.toUpperCase();
         String b = villeB.toUpperCase();
-        if ((a.equals("PARIS") && b.equals("LYON")) || (a.equals("LYON") && b.equals("PARIS"))) {
+        if ((a.equals("PARIS") && b.equals("LE HAVRE")) || (a.equals("LE HAVRE") && b.equals("PARIS"))) {
+            return DISTANCE_PARIS_LE_HAVRE;
+        } else if ((a.equals("PARIS") && b.equals("LYON")) || (a.equals("LYON") && b.equals("PARIS"))) {
             return DISTANCE_PARIS_LYON;
         } else if ((a.equals("PARIS") && b.equals("MARSEILLE")) || (a.equals("MARSEILLE") && b.equals("PARIS"))) {
             return DISTANCE_PARIS_MARSEILLE;

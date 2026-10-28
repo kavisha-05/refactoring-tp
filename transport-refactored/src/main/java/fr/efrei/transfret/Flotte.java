@@ -20,7 +20,8 @@ public class Flotte {
                 new CamionFrigorifique("IJ-789-KL", 8000),
                 new Train("TR-0001", 600000),
                 new Bateau("CMA-CGM-01", 20000000, true),
-                new Avion("F-GTXA", 100000)));
+                new Avion("F-GTXA", 100000),
+                new Peniche("PEN-0001", 2500000)));
     }
 
     public List<Vehicule> getVehicules() {

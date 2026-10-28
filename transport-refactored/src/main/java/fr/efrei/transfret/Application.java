@@ -14,9 +14,13 @@ public class Application {
     private final ServiceExpedition serviceExpedition;
 
     public Application() {
+        this(false);
+    }
+
+    public Application(boolean horsGabaritActif) {
         Notificateur notificateur = new Notificateur(emails, sms);
         serviceClient = new ServiceClient(clients, new ValidateurClient(), notificateur);
-        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(new AssemblagePrix()),
+        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(new AssemblagePrix(horsGabaritActif)),
                 new AffectationVehicule(Flotte.standard()), new ValidateurExpedition(),
                 new EstimateurDelai(), notificateur, new GenerateurIdExpedition());
     }

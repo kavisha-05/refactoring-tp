@@ -6,7 +6,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Application app = new Application();
+        Application app = new Application(true);
         ServiceClient serviceClient = app.serviceClient();
         ServiceExpedition serviceExpedition = app.serviceExpedition();
         GenerateurFacture generateurFacture = app.generateurFacture();
