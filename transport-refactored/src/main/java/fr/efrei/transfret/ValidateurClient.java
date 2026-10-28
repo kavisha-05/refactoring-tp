@@ -20,7 +20,7 @@ public class ValidateurClient {
         if (type == null) {
             return Optional.of("type de client inconnu");
         }
-        if (type == TypeClient.ENTREPRISE && (siret == null || siret.length() != LONGUEUR_SIRET)) {
+        if (type.siretRequis() && (siret == null || siret.length() != LONGUEUR_SIRET)) {
             return Optional.of("SIRET obligatoire (" + LONGUEUR_SIRET + " chiffres) pour une entreprise");
         }
         return Optional.empty();
