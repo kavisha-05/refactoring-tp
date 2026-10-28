@@ -22,17 +22,17 @@ public class ValidateurExpedition {
             if (c.getPoids() <= 0) {
                 return Optional.of("poids invalide pour " + c.getDescription());
             }
-            if (c.getType() == TypeMarchandise.DANGEREUX) dangereux = true;
-            if (c.getType() == TypeMarchandise.REFRIGERE) refrigere = true;
+            dangereux |= c.getType().estDangereux();
+            refrigere |= c.getType().estRefrigere();
         }
-        if (dangereux && mode == ModeTransport.AIR) {
+        if (dangereux && !mode.accepteDangereux()) {
             return Optional.of("les matières dangereuses sont interdites en transport aérien");
         }
-        if (refrigere && !(mode == ModeTransport.ROUTE || mode == ModeTransport.MER)) {
+        if (refrigere && !mode.accepteRefrigere()) {
             return Optional.of("le transport réfrigéré n'est possible que par route ou par mer");
         }
-        if (urgent && mode == ModeTransport.MER) {
-            return Optional.of("pas d'option urgente pour le transport maritime");
+        if (urgent && mode.erreurUrgence() != null) {
+            return Optional.of(mode.erreurUrgence());
         }
         return Optional.empty();
     }

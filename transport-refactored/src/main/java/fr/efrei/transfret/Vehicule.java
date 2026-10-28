@@ -51,7 +51,4 @@ public abstract class Vehicule implements IVehicule {
         }
     }
 
-    public void faireLePlein() {
-        System.out.println("Plein effectué pour " + immatriculation);
-    }
 }
