@@ -16,7 +16,7 @@ public class Application {
     public Application() {
         Notificateur notificateur = new Notificateur(emails, sms);
         serviceClient = new ServiceClient(clients, new ValidateurClient(), notificateur);
-        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(),
+        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(new AssemblagePrix()),
                 new AffectationVehicule(Flotte.standard()), new ValidateurExpedition(),
                 new EstimateurDelai(), notificateur, new GenerateurIdExpedition());
     }
